@@ -1,29 +1,16 @@
-import { signOut } from "firebase/auth";
+import NoteForm from "../components/NoteForm";
+import NotesList from "../components/NotesList";
 
-import { auth } from "../firebase";
-
-import { useNavigate } from "react-router-dom";
-
-export default function Dashboard() {
-
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-
-    await signOut(auth);
-
-    navigate("/login");
-  };
-
+const Dashboard = () => {
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
+      <h1>Note Insight Dashboard</h1>
 
-      <h1>Dashboard</h1>
+      <NoteForm />
 
-      <button onClick={handleLogout}>
-        Logout
-      </button>
-
+      <NotesList />
     </div>
   );
-}
+};
+
+export default Dashboard;

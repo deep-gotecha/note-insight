@@ -25,3 +25,5 @@ __pycache__
 # Build
 
 dist
+
+backend/credentials/serviceAccountKey.json
