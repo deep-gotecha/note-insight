@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getNotes } from "../services/noteService";
 
 interface Note {
   id: string;
@@ -7,8 +8,12 @@ interface Note {
   noteText: string;
 }
 
+
+
 const NotesList = () => {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchNotes();
@@ -16,21 +21,38 @@ const NotesList = () => {
 
   const fetchNotes = async () => {
     try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/notes"
-      );
+      setLoading(true);
+      setError("");
 
-      const data = await response.json();
 
+      const data = await getNotes();
+
+      
       setNotes(data);
     } catch (error) {
       console.error(error);
+
+      setError("Unable to load notes");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <h2>Loading notes...</h2>;
+  }
+
+  if (error) {
+    return <h2>{error}</h2>;
+  }
 
   return (
     <div style={{ marginTop: "40px" }}>
       <h2>Saved Notes</h2>
+
+      {notes.length === 0 && (
+        <p>No notes found.</p>
+      )}
 
       {notes.map((note) => (
         <div

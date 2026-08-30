@@ -1,10 +1,12 @@
+import { API_BASE_URL } from "./api";
+
 export const createNote = async (
   patientPseudo: string,
   visitDate: string,
   note: string
 ) => {
   const response = await fetch(
-    "http://127.0.0.1:8000/notes",
+    `${API_BASE_URL}/notes`,
     {
       method: "POST",
       headers: {
@@ -20,6 +22,18 @@ export const createNote = async (
 
   if (!response.ok) {
     throw new Error("Failed to create note");
+  }
+
+  return response.json();
+};
+
+
+
+export const getNotes = async () => {
+  const response = await fetch(`${API_BASE_URL}/notes`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch notes");
   }
 
   return response.json();
