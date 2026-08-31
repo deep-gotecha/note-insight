@@ -10,10 +10,17 @@ router = APIRouter()
 @router.post("/notes")
 async def create_note(note: NoteCreate):
 
+    analysis = analyze_note(note.note)
+
     note_data = {
         "patientPseudo": note.patientPseudo,
         "visitDate": note.visitDate,
         "noteText": note.note,
+
+        "summary": analysis["summary"],
+        "symptoms": analysis["symptoms"],
+        "riskLevel": analysis["riskLevel"],
+
         "createdAt": datetime.utcnow().isoformat()
     }
 
@@ -25,6 +32,7 @@ async def create_note(note: NoteCreate):
         "message": "Note stored successfully",
         "documentId": doc_ref.id
     }
+
 
 @router.get("/notes")
 def get_notes():

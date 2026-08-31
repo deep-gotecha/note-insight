@@ -15,6 +15,9 @@ def analyze_note(note_text: str):
 
     if "dizziness" in text:
         symptoms.append("dizziness")
+        
+    if "fatigue" in text:
+        symptoms.append("Fatigue")
 
     if len(symptoms) >= 3:
         risk_level = "High"

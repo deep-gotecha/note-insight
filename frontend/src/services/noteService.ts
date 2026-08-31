@@ -38,3 +38,31 @@ export const getNotes = async () => {
 
   return response.json();
 };
+
+
+export const analyzeNote = async (
+  patientPseudo: string,
+  visitDate: string,
+  note: string
+) => {
+  const response = await fetch(
+    "http://127.0.0.1:8000/analyze",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        patientPseudo,
+        visitDate,
+        note,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to analyze note");
+  }
+
+  return response.json();
+};

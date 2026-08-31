@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createNote } from "../services/noteService";
+import { createNote, analyzeNote,} from "../services/noteService";
 
 interface NoteFormProps {
   onNoteCreated: () => void;
@@ -14,7 +14,8 @@ const NoteForm = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
   const [error, setError] = useState<string>("");
-
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  
   const handleAnalyze = async () => {
     setError("");
     setSuccess("");
@@ -37,6 +38,15 @@ const NoteForm = ({
     try {
       setLoading(true);
       // backend call will go here later
+
+      const analysis = await analyzeNote(
+        patientPseudo,
+        visitDate,
+        note
+      ); 
+      console.log(analysis);
+
+      setAnalysisResult(analysis);
 
       const result = await createNote(
         patientPseudo,
@@ -106,6 +116,34 @@ const NoteForm = ({
 
       {error && (<p style={{ color: "red" }}>{error}</p>)}
       {success && (<p style={{ color: "green" }}>{success}</p>)}
+
+      {analysisResult && (
+        <div
+          style={{
+            border: "1px solid gray",
+            padding: "15px",
+            marginTop: "20px",
+          }}
+        >
+          <h3>AI Analysis</h3>
+
+          <p>
+            <strong>Summary:</strong>{" "}
+            {analysisResult.summary}
+          </p>
+
+          <p>
+            <strong>Symptoms:</strong>{" "}
+            {analysisResult.symptoms.join(", ")}
+          </p>
+
+          <p>
+            <strong>Risk Level:</strong>{" "}
+            {analysisResult.riskLevel}
+          </p>
+        </div>
+      )}
+
 
       <button
         onClick={handleAnalyze} 
