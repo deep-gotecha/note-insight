@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+
+import { auth } from "../firebase";
 import NoteForm from "../components/NoteForm";
 
-
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -10,6 +22,9 @@ const Dashboard = () => {
 
       <div
         style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
           marginBottom: "20px",
         }}
       >
@@ -23,12 +38,19 @@ const Dashboard = () => {
             View History
           </button>
         </Link>
+
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: "10px 20px",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
       </div>
 
-      <NoteForm
-        onNoteCreated={() => {}}
-      />
-
+      <NoteForm onNoteCreated={() => {}} />
     </div>
   );
 };
