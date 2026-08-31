@@ -6,6 +6,10 @@ interface Note {
   patientPseudo: string;
   visitDate: string;
   noteText: string;
+
+  summary?: string;
+  symptoms?: string[];
+  riskLevel?: string;
 }
 
 
@@ -84,6 +88,28 @@ const NotesList = ({
             <strong>Note:</strong>{" "}
             {note.noteText}
           </p>
+
+          {note.summary && (
+            <p>
+              <strong>Summary:</strong>{" "}
+              {note.summary}
+            </p>
+          )}
+
+          {note.symptoms && (
+            <p>
+              <strong>Symptoms:</strong>{" "}
+              {note.symptoms.join(", ")}
+            </p>
+          )}
+
+          {note.riskLevel && (
+            <p>
+              <strong>Risk Level:</strong>{" "}
+              {note.riskLevel}
+            </p>
+          )}
+
         </div>
       ))}
     </div>
