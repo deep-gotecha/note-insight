@@ -13,15 +13,19 @@ async def create_note(note: NoteCreate):
     analysis = analyze_note(note.note)
 
     note_data = {
+        "userId": "demo-user",
+        
         "patientPseudo": note.patientPseudo,
         "visitDate": note.visitDate,
         "noteText": note.note,
 
+        "createdAt": datetime.utcnow().isoformat(),
+        
         "summary": analysis["summary"],
         "symptoms": analysis["symptoms"],
         "riskLevel": analysis["riskLevel"],
 
-        "createdAt": datetime.utcnow().isoformat()
+        
     }
 
     doc_ref = db.collection("notes").document()
@@ -37,7 +41,7 @@ async def create_note(note: NoteCreate):
 @router.get("/notes")
 def get_notes():
 
-    docs = db.collection("notes").stream()
+    docs = (db.collection("notes").where("userId", "==", "demo-user").stream())
 
     notes = []
 
