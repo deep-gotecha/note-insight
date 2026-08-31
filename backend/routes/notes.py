@@ -1,7 +1,10 @@
 from fastapi import APIRouter
-from schemas.note import NoteCreate
-from services.firestore import db
 from datetime import datetime
+
+from schemas.note import NoteCreate
+from schemas.analysis import AnalysisResponse
+
+from services.firestore import db
 from services.ai_service import analyze_note
 
 router = APIRouter()
@@ -12,20 +15,20 @@ async def create_note(note: NoteCreate):
 
     analysis = analyze_note(note.note)
 
+    validated_analysis = AnalysisResponse(**analysis)
+
     note_data = {
-        "userId": "demo-user",
-        
+        "userId": note.userId,
+
         "patientPseudo": note.patientPseudo,
         "visitDate": note.visitDate,
         "noteText": note.note,
 
         "createdAt": datetime.utcnow().isoformat(),
-        
+
         "summary": analysis["summary"],
         "symptoms": analysis["symptoms"],
         "riskLevel": analysis["riskLevel"],
-
-        
     }
 
     doc_ref = db.collection("notes").document()
@@ -38,10 +41,14 @@ async def create_note(note: NoteCreate):
     }
 
 
-@router.get("/notes")
-def get_notes():
+@router.get("/notes/{user_id}")
+def get_notes(user_id: str):
 
-    docs = (db.collection("notes").where("userId", "==", "demo-user").stream())
+    docs = (
+        db.collection("notes")
+        .where("userId", "==", user_id)
+        .stream()
+    )
 
     notes = []
 
@@ -53,9 +60,11 @@ def get_notes():
     return notes
 
 
-@router.post("/analyze")
+@router.post("/analyze", response_model=AnalysisResponse)
 async def analyze_clinical_note(note: NoteCreate):
 
-    result = analyze_note(note.note)
+    analysis = analyze_note(note.note)
 
-    return result
+    validated_analysis = AnalysisResponse(**analysis)
+
+    return validated_analysis

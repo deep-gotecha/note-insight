@@ -24,20 +24,25 @@ def analyze_note(note_text: str):
     prompt = f"""
 You are a clinical note analysis assistant.
 
-Analyze the following clinical note and return ONLY valid JSON.
+Analyze the note and return ONLY valid JSON.
+
+Rules:
+1. Return JSON only.
+2. No markdown.
+3. No explanation.
+4. No extra text.
+5. riskLevel must be one of:
+   Low
+   Medium
+   High
 
 Required JSON format:
 
 {{
-    "summary": "short clinical summary",
-    "symptoms": ["symptom1", "symptom2"],
-    "riskLevel": "Low"
+  "summary": "short clinical summary",
+  "symptoms": ["symptom1", "symptom2"],
+  "riskLevel": "Low"
 }}
-
-Risk level must be:
-Low
-Medium
-High
 
 Clinical Note:
 {note_text}
@@ -46,6 +51,8 @@ Clinical Note:
     response = model.generate_content(prompt)
 
     result_text = response.text.strip()
+    if not result_text:
+        raise ValueError("Gemini returned empty response")
 
     result_text = result_text.replace("```json", "")
     result_text = result_text.replace("```", "")

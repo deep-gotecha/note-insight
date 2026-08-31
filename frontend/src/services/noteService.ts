@@ -1,10 +1,21 @@
+import { auth } from "../firebase";
 import { API_BASE_URL } from "./api";
+
+
 
 export const createNote = async (
   patientPseudo: string,
   visitDate: string,
-  note: string
+  note: string,
+  userId: string
 ) => {
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
   const response = await fetch(
     `${API_BASE_URL}/notes`,
     {
@@ -16,6 +27,7 @@ export const createNote = async (
         patientPseudo,
         visitDate,
         note,
+        userId: user.uid,
       }),
     }
   );
@@ -29,8 +41,18 @@ export const createNote = async (
 
 
 
+
 export const getNotes = async () => {
-  const response = await fetch(`${API_BASE_URL}/notes`);
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
+  const response = await fetch(
+    `${API_BASE_URL}/notes/${user.uid}`
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch notes");
@@ -40,13 +62,21 @@ export const getNotes = async () => {
 };
 
 
+
 export const analyzeNote = async (
   patientPseudo: string,
   visitDate: string,
   note: string
 ) => {
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("User not logged in");
+  }
+
   const response = await fetch(
-    "http://127.0.0.1:8000/analyze",
+    `${API_BASE_URL}/analyze`,
     {
       method: "POST",
       headers: {
@@ -56,6 +86,7 @@ export const analyzeNote = async (
         patientPseudo,
         visitDate,
         note,
+        userId: user.uid,
       }),
     }
   );
