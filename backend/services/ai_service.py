@@ -1,33 +1,54 @@
+import os
+import json
+
+import google.generativeai as genai
+
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+
+genai.configure(
+    api_key=os.getenv("GEMINI_API_KEY")
+)
+
+
+model = genai.GenerativeModel(
+    "gemini-3.6-flash"
+)
+
+
 def analyze_note(note_text: str):
 
-    symptoms = []
+    prompt = f"""
+You are a clinical note analysis assistant.
 
-    text = note_text.lower()
+Analyze the following clinical note and return ONLY valid JSON.
 
-    if "headache" in text:
-        symptoms.append("headache")
+Required JSON format:
 
-    if "fever" in text:
-        symptoms.append("fever")
+{{
+    "summary": "short clinical summary",
+    "symptoms": ["symptom1", "symptom2"],
+    "riskLevel": "Low"
+}}
 
-    if "nausea" in text:
-        symptoms.append("nausea")
+Risk level must be:
+Low
+Medium
+High
 
-    if "dizziness" in text:
-        symptoms.append("dizziness")
-        
-    if "fatigue" in text:
-        symptoms.append("Fatigue")
+Clinical Note:
+{note_text}
+"""
 
-    if len(symptoms) >= 3:
-        risk_level = "High"
-    elif len(symptoms) >= 1:
-        risk_level = "Medium"
-    else:
-        risk_level = "Low"
+    response = model.generate_content(prompt)
 
-    return {
-        "summary": note_text,
-        "symptoms": symptoms,
-        "riskLevel": risk_level
-    }
+    result_text = response.text.strip()
+
+    result_text = result_text.replace("```json", "")
+    result_text = result_text.replace("```", "")
+    result_text = result_text.strip()
+
+    return json.loads(result_text)
