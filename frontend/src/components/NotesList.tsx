@@ -10,14 +10,21 @@ interface Note {
 
 
 
-const NotesList = () => {
+interface NotesListProps {
+  refreshTrigger: number;
+}
+
+const NotesList = ({
+  refreshTrigger,
+}: NotesListProps) => {
+
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [refreshTrigger]);
 
   const fetchNotes = async () => {
     try {

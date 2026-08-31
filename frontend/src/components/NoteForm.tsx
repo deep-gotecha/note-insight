@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { createNote } from "../services/noteService";
 
-const NoteForm = () => {
+interface NoteFormProps {
+  onNoteCreated: () => void;
+}
+
+const NoteForm = ({
+  onNoteCreated,
+}: NoteFormProps) => {
   const [patientPseudo, setPatientPseudo] = useState<string>("");
   const [visitDate, setVisitDate] = useState<string>("");
   const [note, setNote] = useState<string>("");
@@ -40,14 +46,20 @@ const NoteForm = () => {
 
       console.log(result);
 
+      onNoteCreated();
+
       setSuccess("Note stored successfully");
     } 
+
+
     catch (err) {
       setError("Failed to save note.");
     } finally {
       setLoading(false);
     }
   };
+
+  
 
   return (
     <div>
