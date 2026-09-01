@@ -7,7 +7,7 @@ export const createNote = async (
   patientPseudo: string,
   visitDate: string,
   note: string,
-  userId: string
+  
 ) => {
 
   const user = auth.currentUser;
