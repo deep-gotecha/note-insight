@@ -7,7 +7,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://note-insight-livid.vercel.app"
+        "https://note-insight-livid.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
