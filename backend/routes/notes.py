@@ -12,8 +12,13 @@ router = APIRouter()
 
 @router.post("/notes")
 async def create_note(note: NoteCreate):
-
+    
     analysis = analyze_note(note.note)
+    
+    print("\n===== ANALYSIS RESULT =====")
+    print(analysis)
+    print("===========================\n")
+
 
     validated_analysis = AnalysisResponse(**analysis)
 
@@ -29,6 +34,9 @@ async def create_note(note: NoteCreate):
         "summary": analysis["summary"],
         "symptoms": analysis["symptoms"],
         "riskLevel": analysis["riskLevel"],
+        
+        "recommendations": analysis["recommendations"],
+        "conditions": analysis["conditions"],
     }
 
     doc_ref = db.collection("notes").document()

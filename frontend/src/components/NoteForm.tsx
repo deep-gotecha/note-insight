@@ -141,6 +141,59 @@ const NoteForm = ({
             <strong>Risk Level:</strong>{" "}
             {analysisResult.riskLevel}
           </p>
+
+          <h4>Recommendations</h4>
+
+          <ul>
+            {analysisResult.recommendations?.map(
+              (recommendation: string, index: number) => (
+                <li key={index}>
+                  {recommendation}
+                </li>
+              )
+            )}
+          </ul>
+
+          <h5>Conditions</h5>
+
+          {analysisResult.conditions?.map(
+            (condition: any, index: number) => (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid gray",
+                  padding: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <p>
+                  <strong>Condition:</strong>{" "}
+                  {condition.conditionName}
+                </p>
+
+                <p>
+                  <strong>ICD-10:</strong>{" "}
+                  {condition.icd10Code}
+                </p>
+
+                <p>
+                  <strong>Evidence:</strong>{" "}
+                  {condition.evidenceQuote}
+                </p>
+
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {condition.documentationStatus}
+                </p>
+
+                <p>
+                  <strong>Confidence:</strong>{" "}
+                  {(condition.confidence * 100).toFixed(0)}%
+                </p>
+              </div>
+            )
+          )}  
+
         </div>
       )}
 

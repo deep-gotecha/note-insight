@@ -31,7 +31,9 @@ Rules:
 2. No markdown.
 3. No explanation.
 4. No extra text.
-5. riskLevel must be one of:
+5. Extract symptoms.
+6. Generate clinical recommendations.
+7. riskLevel must be one of:
    Low
    Medium
    High
@@ -40,8 +42,33 @@ Required JSON format:
 
 {{
   "summary": "short clinical summary",
-  "symptoms": ["symptom1", "symptom2"],
-  "riskLevel": "Low"
+  "symptoms": [
+    "symptom1",
+    "symptom2"
+  ],
+  "riskLevel": "Low",
+  "recommendations": [
+    "recommendation1",
+    "recommendation2"
+  ],
+}}
+{{  "conditions": [
+    {{   
+      "conditionName": "condition name",
+
+      "evidenceQuote":
+      "exact evidence from note",
+
+      "documentationStatus":
+      "Documented",
+
+      "icd10Code":
+      "ICD10 code",
+
+      "confidence":
+      0.95
+    }}
+  ]
 }}
 
 Clinical Note:
